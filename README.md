@@ -1,6 +1,6 @@
 # Project Overview
 
-This project is a web application that fetches and analyzes stock data from Yahoo Finance using the yfinance library. It calculates the maximum continuous gain and loss days, as well as the gain and loss percentages for a list of stocks. The results are displayed on a simple web interface.
+This project is a web application that fetches and analyzes stock data of Indian Futures and Options Stocks (as on 19-06-2024) from Yahoo Finance using the yfinance library. It calculates the maximum continuous gain and loss days, as well as the gain and loss percentages for a list of stocks. The results are displayed on a simple web interface.
 This is a data minimg based trading strategy and which when combined with volume analysis can be helpful in identifying stocks which might experience a slight pull back or a minor bounce back from current levels based on historical trends analysed.
 
 ## Table of Contents
