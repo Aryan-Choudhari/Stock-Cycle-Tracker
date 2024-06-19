@@ -14,6 +14,7 @@ This is a data minimg based trading strategy and which when combined with volume
 - [Contributing](#contributing)
 - [License](#license)
 - [Project Demo](#project-demo)
+- [Contact](#contact)
 
 ## Technologies Used
 
@@ -82,3 +83,6 @@ This project is licensed under the MIT License.
 You can add a GIF of the working project here.
 
 ![Project Demo](CycleTracking.gif)
+
+## Contact
+If you have any questions, feel free to reach out at aryanchoudhari09@gmail.com
