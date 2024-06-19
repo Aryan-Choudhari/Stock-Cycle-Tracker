@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Execute Code</title>
+    <style>
+        body, html {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://img.freepik.com/free-vector/gradient-stock-market-concept_23-2149166910.jpg?t=st=1717432806~exp=1717436406~hmac=b6e6063dab05f58a2c6103b89377bb6c4d89f1264d3c470336ad574e8bd2a20e&w=996');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .content {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 30px;
+            font-size: 24px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+            font-size: 16px;
+            text-align: left;
+        }
+        #executeButton {
+            background-color: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <button id="executeButton">Execute</button>
+        <h2>Max Loss Days</h2>
+        <pre id="outputMaxLossDays"></pre>
+        <h2>Max Gain Days</h2>
+        <pre id="outputMaxGainDays"></pre>
+        <h2>Gain Percentage Change</h2>
+        <pre id="outputGainPctChange"></pre>
+        <h2>Loss Percentage Change</h2>
+        <pre id="outputLossPctChange"></pre>
+    </div>
+
+    <script>
+        const executeButton = document.getElementById('executeButton');
+        const outputMaxLossDays = document.getElementById('outputMaxLossDays');
+        const outputMaxGainDays = document.getElementById('outputMaxGainDays');
+        const outputGainPctChange = document.getElementById('outputGainPctChange');
+        const outputLossPctChange = document.getElementById('outputLossPctChange');
+
+        executeButton.addEventListener('click', () => {
+            executeButton.style.backgroundColor = '#ffa726';
+            executeButton.textContent = 'Loading...';
+            executeButton.disabled = true;
+
+            fetch('http://localhost:8000/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                outputMaxLossDays.innerHTML = formatOutput(data.max_loss_days);
+                outputMaxGainDays.innerHTML = formatOutput(data.max_gain_days);
+                outputGainPctChange.innerHTML = formatOutput(data.gain_pct_change);
+                outputLossPctChange.innerHTML = formatOutput(data.loss_pct_change);
+                executeButton.style.backgroundColor = '#ff9800';
+                executeButton.textContent = 'Execute';
+                executeButton.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                outputMaxLossDays.textContent = 'An error occurred';
+                outputMaxGainDays.textContent = 'An error occurred';
+                outputGainPctChange.textContent = 'An error occurred';
+                outputLossPctChange.textContent = 'An error occurred';
+                executeButton.style.backgroundColor = '#ff9800';
+                executeButton.textContent = 'Execute';
+                executeButton.disabled = false;
+            });
+        });
+
+        function formatOutput(data) {
+            let formattedOutput = '';
+            if (typeof data === 'object') {
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const value = data[key];
+                        formattedOutput += `<span class="bold">${key}:</span> `;
+                        if (typeof value === 'object') {
+                            let innerValues = [];
+                            for (const innerKey in value) {
+                                if (value.hasOwnProperty(innerKey)) {
+                                    let innerValue = value[innerKey];
+                                    if (typeof innerValue === 'number' && innerKey.toLowerCase().includes('pct')) {
+                                        innerValue = (innerValue * 100).toFixed(2);
+                                    }
+                                    innerValues.push(`${innerKey}: ${innerValue}`);
+                                }
+                            }
+                            formattedOutput += `${innerValues.join(', ')}\n`;
+                        } else {
+                            if (typeof value === 'number' && key.toLowerCase().includes('pct')) {
+                                value = (value * 100).toFixed(2);
+                            }
+                            formattedOutput += `${value}\n`;
+                        }
+                    }
+                }
+            } else {
+                formattedOutput = data;
+            }
+            return formattedOutput.trim();
+        }
+    </script>
+</body>
+</html>
